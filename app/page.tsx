@@ -9,85 +9,109 @@ const stats = {
 
 export default function HomePage() {
   return (
-    <section className="mx-auto max-w-7xl px-6 py-20">
+    <main className="relative min-h-screen bg-black text-white overflow-hidden">
+      {/* Background accent */}
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/5 via-transparent to-black" />
+
       {/* Hero */}
-      <div className="max-w-3xl">
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight">
-          Skill wins.
-          <br />
-          Not luck.
-        </h1>
+      <section className="relative mx-auto max-w-7xl px-6 pt-28 pb-24">
+        <div className="max-w-3xl">
+          <h1 className="text-5xl sm:text-6xl font-extrabold tracking-tight">
+            <span className="block">Skill wins.</span>
+            <span className="block text-white/60">Not luck.</span>
+          </h1>
 
-        <p className="mt-6 text-lg text-white/70">
-          KNGO is a skill-based competition platform where ability decides the
-          outcome. Compete, climb the leaderboard, and win real prizes.
-        </p>
+          <p className="mt-6 text-lg text-white/70 leading-relaxed">
+            KNGO is a skill-based competition platform where ability decides the
+            outcome. Compete, climb the leaderboard, and win real prizes.
+          </p>
 
-        <div className="mt-10 flex flex-wrap gap-4">
-          <Link
-            href="/competitions"
-            className="rounded-md bg-white px-6 py-3 text-black font-medium hover:bg-white/90 transition"
-          >
-            View Competitions
-          </Link>
+          <div className="mt-10 flex flex-wrap gap-4">
+            <Link
+              href="/competitions"
+              className="inline-flex items-center justify-center rounded-md bg-white px-7 py-3 text-black font-semibold hover:bg-white/90 transition"
+            >
+              Enter Competitions
+            </Link>
 
-          <Link
-            href="/winners"
-            className="rounded-md border border-white/20 px-6 py-3 font-medium hover:bg-white hover:text-black transition"
-          >
-            Recent Winners
-          </Link>
+            <Link
+              href="/winners"
+              className="inline-flex items-center justify-center rounded-md border border-white/20 px-7 py-3 font-semibold text-white hover:bg-white hover:text-black transition"
+            >
+              View Winners
+            </Link>
+          </div>
         </div>
+      </section>
+
+      {/* Divider */}
+      <div className="mx-auto max-w-7xl px-6">
+        <div className="h-px w-full bg-white/10" />
       </div>
 
       {/* Live stats */}
-      <div className="mt-20 grid gap-6 sm:grid-cols-3">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-          <p className="text-sm text-white/60">Open competitions</p>
-          <p className="mt-2 text-3xl font-bold">
-            {stats.openCompetitions}
-          </p>
+      <section className="mx-auto max-w-7xl px-6 py-20">
+        <div className="grid gap-6 sm:grid-cols-3">
+          <StatCard label="Open competitions" value={stats.openCompetitions} />
+          <StatCard
+            label="Closed competitions"
+            value={stats.closedCompetitions}
+          />
+          <StatCard label="Winners paid" value={stats.winnersPaid} />
         </div>
-
-        <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-          <p className="text-sm text-white/60">Closed competitions</p>
-          <p className="mt-2 text-3xl font-bold">
-            {stats.closedCompetitions}
-          </p>
-        </div>
-
-        <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-          <p className="text-sm text-white/60">Winners paid</p>
-          <p className="mt-2 text-3xl font-bold">
-            {stats.winnersPaid}
-          </p>
-        </div>
-      </div>
+      </section>
 
       {/* Value props */}
-      <div className="mt-24 grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-          <h3 className="text-lg font-semibold">Skill-Based</h3>
-          <p className="mt-2 text-sm text-white/70">
-            Every competition is designed so skill — not chance — determines the
-            winner.
-          </p>
+      <section className="mx-auto max-w-7xl px-6 pb-32">
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <ValueCard
+            title="Skill-Based"
+            text="Every competition is designed so skill — not chance — determines the winner."
+          />
+          <ValueCard
+            title="Transparent"
+            text="Clear rules, visible leaderboards, and verified results."
+          />
+          <ValueCard
+            title="Real Prizes"
+            text="Cash, tech, and exclusive rewards — earned, not gambled."
+          />
         </div>
+      </section>
+    </main>
+  );
+}
 
-        <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-          <h3 className="text-lg font-semibold">Transparent</h3>
-          <p className="mt-2 text-sm text-white/70">
-            Clear rules, visible leaderboards, and verified results.
-          </p>
-        </div>
+function StatCard({
+  label,
+  value,
+}: {
+  label: string;
+  value: number;
+}) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/5 p-6">
+      <p className="text-sm uppercase tracking-wide text-white/50">
+        {label}
+      </p>
+      <p className="mt-3 text-4xl font-extrabold">{value}</p>
+    </div>
+  );
+}
 
-        <div className="rounded-xl border border-white/10 bg-white/5 p-6">
-          <h3 className="text-lg font-semibold">Real Prizes</h3>
-          <p className="mt-2 text-sm text-white/70">
-            Cash, tech, and exclusive rewards — earned, not gambled.
-          </p>
-        </div>
-      </div>
-    </section>
+function ValueCard({
+  title,
+  text,
+}: {
+  title: string;
+  text: string;
+}) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/5 p-6">
+      <h3 className="text-lg font-semibold">{title}</h3>
+      <p className="mt-2 text-sm text-white/70 leading-relaxed">
+        {text}
+      </p>
+    </div>
   );
 }

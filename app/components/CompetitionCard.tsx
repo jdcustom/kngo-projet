@@ -1,93 +1,63 @@
-// app/components/CompetitionCard.tsx
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
-type CompetitionCardProps = {
+type Competition = {
+  slug: string;
   title: string;
   description: string;
-  slug: string;
-  closesAt: string; // ISO date string
+  status?: "open" | "closed"; // ← optional on purpose
+  endsAt?: string;
 };
 
-function getTimeLeft(target: Date) {
-  const diff = target.getTime() - Date.now();
-  if (diff <= 0) return null;
-
-  const hours = Math.floor(diff / (1000 * 60 * 60));
-  const minutes = Math.floor((diff / (1000 * 60)) % 60);
-
-  return { hours, minutes };
-}
-
 export default function CompetitionCard({
-  title,
-  description,
-  slug,
-  closesAt,
-}: CompetitionCardProps) {
-  const [timeLeft, setTimeLeft] = useState<{
-    hours: number;
-    minutes: number;
-  } | null>(null);
-
-  useEffect(() => {
-    const target = new Date(closesAt);
-
-    const update = () => {
-      setTimeLeft(getTimeLeft(target));
-    };
-
-    update();
-    const interval = setInterval(update, 60_000);
-
-    return () => clearInterval(interval);
-  }, [closesAt]);
-
-  const isOpen = timeLeft !== null;
+  competition,
+}: {
+  competition: Competition;
+}) {
+  const status = competition.status ?? "closed";
+  const isOpen = status === "open";
 
   return (
-    <Link
-      href={`/competitions/${slug}`}
-      className="group rounded-xl border border-white/10 bg-white/5 p-6 flex flex-col transition duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/10"
-    >
-      {/* Status */}
-      <div className="mb-2 flex items-center justify-between">
-        <span
-          className={`text-xs font-medium px-2 py-1 rounded ${
-            isOpen
-              ? "bg-green-500/20 text-green-400"
-              : "bg-red-500/20 text-red-400"
-          }`}
-        >
-          {isOpen ? "Open" : "Closed"}
-        </span>
+    <div className="rounded-xl border border-white/10 bg-white/5 p-6 flex flex-col justify-between">
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xl font-semibold">{competition.title}</h3>
 
-        {isOpen && timeLeft && (
-          <span className="text-xs text-white/60">
-            {timeLeft.hours}h {timeLeft.minutes}m left
+          <span
+            className={`text-xs px-3 py-1 rounded-full ${
+              isOpen
+                ? "bg-green-500/10 text-green-400"
+                : "bg-red-500/10 text-red-400"
+            }`}
+          >
+            {status.toUpperCase()}
           </span>
+        </div>
+
+        <p className="text-sm text-white/70 mb-6">
+          {competition.description}
+        </p>
+
+        {competition.endsAt && (
+          <p className="text-xs text-white/50">
+            Ends: {new Date(competition.endsAt).toLocaleString()}
+          </p>
         )}
       </div>
 
-      <h2 className="text-lg font-semibold tracking-tight">
-        {title}
-      </h2>
-
-      <p className="mt-2 text-sm text-white/70 flex-grow">
-        {description}
-      </p>
-
-      <span
-        className={`mt-4 inline-block w-full rounded-md px-4 py-2 text-center font-medium transition ${
-          isOpen
-            ? "bg-white text-black group-hover:bg-white/90"
-            : "bg-white/20 text-white/50 cursor-not-allowed"
-        }`}
-      >
-        {isOpen ? "Enter" : "Closed"}
-      </span>
-    </Link>
+      <div className="mt-6">
+        {isOpen ? (
+          <Link
+            href={`/competitions/${competition.slug}`}
+            className="inline-block w-full text-center rounded-md bg-white px-4 py-2 text-black font-medium hover:bg-white/90 transition"
+          >
+            Enter
+          </Link>
+        ) : (
+          <span className="inline-block w-full text-center rounded-md border border-white/20 px-4 py-2 text-white/50 cursor-not-allowed">
+            Closed
+          </span>
+        )}
+      </div>
+    </div>
   );
 }
